@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:task="http://www.springframework.org/schema/task"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+		http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd">
+
+	<!-- 0、开启注解扫描 -->
+	<context:component-scan base-package="com.zrgj">
+		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+		<context:exclude-filter type="annotation" expression="org.springframework.web.bind.annotation.ControllerAdvice"/>
+	</context:component-scan>
+	
+	<!-- 1、去引入properties文件,如果要引入多个properties文件,又该怎么解决呢 -->
+	<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>classpath:dbcp.properties</value>
+			</list>
+		</property>
+	</bean>
+	
+	<!-- 2、去配置数据源 -->
+	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+		<property name="jdbcUrl" value="${url}"/>
+		<property name="driverClass" value="${driverClassName}"/>
+		<property name="user" value="${username}"/>
+		<property name="password" value="${password}"/>
+	</bean>
+	
+	<!-- 3、去配置事务 -->
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource"/>
+	</bean>
+	<!-- 4、开启事务注解 -->
+	<tx:annotation-driven transaction-manager="transactionManager"/>
+	
+	<!-- 5、在spring中去配置mybatis的一些信息 -->
+	<bean id="sessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<!-- 配置数据源 -->
+		<property name="dataSource" ref="dataSource"/>
+		<!-- 这个配置的是mybatis的主配置文件 -->
+		<property name="configLocation" value="classpath:mybatis-config.xml"/>
+		<!-- 配置的是mybatis的xml文件 -->
+		<property name="mapperLocations" value="classpath:mapper/*.xml"/>
+		<!-- 配置别名 -->
+		<property name="typeAliasesPackage" value="com.zrgj.bean;com.zrgj.vo"/>
+	</bean>
+	
+	<!-- 6、要配置Mapper接口的实现类(是去扫描哪个包下面的mapper) -->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="com.zrgj.dao"/>
+	</bean>
+	
+	<!-- 表示的是启用定时任务注解 -->
+	<task:annotation-driven/>
+	
+	<!-- 开启aop注解 -->
+	<aop:aspectj-autoproxy/>
+	
+</beans>

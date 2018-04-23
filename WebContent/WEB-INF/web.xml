@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" id="WebApp_ID" version="3.0">
+  <display-name>web_shopping</display-name>
+  
+  <filter>
+  	<filter-name>characterEncodingFilter</filter-name>
+  	<filter-class>com.zrgj.system.web.filter.CharacterEncodingFilter</filter-class>
+  </filter>
+  
+  <filter-mapping>
+  	<filter-name>characterEncodingFilter</filter-name>
+  	<url-pattern>/*</url-pattern>
+  </filter-mapping>
+  
+  <filter>
+  	<filter-name>employeeLoginFilter</filter-name>
+  	<filter-class>com.zrgj.system.web.filter.EmployeeLoginFilter</filter-class>
+  </filter>
+  
+  <filter-mapping>
+  	<filter-name>employeeLoginFilter</filter-name>
+  	<url-pattern>/sys/servlet/*</url-pattern>
+  </filter-mapping>
+  
+  <filter>
+  	<filter-name>validateUserLoginFilter</filter-name>
+  	<filter-class>com.zrgj.front.web.filter.ValidateUserLoginFilter</filter-class>
+  </filter>
+  
+  <filter-mapping>
+  	<filter-name>validateUserLoginFilter</filter-name>
+  	<url-pattern>/front/handler/buyProductServlet/*</url-pattern>
+  </filter-mapping>
+  <filter-mapping>
+  	<filter-name>validateUserLoginFilter</filter-name>
+  	<url-pattern>/front/handler/orderHandlerServlet/*</url-pattern>
+  </filter-mapping>
+  
+  <welcome-file-list>
+  	<welcome-file>index.jsp</welcome-file>
+  </welcome-file-list>
+  
+</web-app>
